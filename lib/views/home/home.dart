@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
                     (route) => false);
               },
               icon: const Icon(Icons.logout_rounded),
+              tooltip: "Log-out",
             ),
           ),
         ],
