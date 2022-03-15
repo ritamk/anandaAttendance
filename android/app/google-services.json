@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1064149269321",
+    "project_id": "facerec-a8f22",
+    "storage_bucket": "facerec-a8f22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064149269321:android:c7a5f8b775ea2147013898",
+        "android_client_info": {
+          "package_name": "kon.ritam.face_rec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064149269321-vsiu2u8u43u7np85lb9mgck31psi7agj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-Fg5HUP8DJ6agP5pG6o7BHJgCNejFZMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064149269321-vsiu2u8u43u7np85lb9mgck31psi7agj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1064149269321-bb6mlfq75ou47edpq8huv3dqkdsv3bln.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kon.ritam.faceRec"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
