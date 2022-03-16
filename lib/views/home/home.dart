@@ -1,12 +1,10 @@
+import 'package:face_rec/models/employee_model.dart';
 import 'package:face_rec/services/auth/authentication.dart';
 import 'package:face_rec/services/auth/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
-import 'package:face_rec/shared/providers.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';
-import 'package:face_rec/views/home/home_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key, required this.uid}) : super(key: key);
@@ -14,6 +12,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DetailedEmployeeModel? detEmpModel;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
@@ -37,41 +37,69 @@ class HomePage extends StatelessWidget {
             future: DatabaseService(uid: uid).employeeDetail(),
             initialData: null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
-                child: snapshot.hasData
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Text(
-                            "Welcome,",
-                            style: TextStyle(
-                                fontSize: 15.0, color: Colors.black45),
-                            textAlign: TextAlign.start,
-                          ),
-                          Text(snapshot.data["name"],
-                              style: const TextStyle(
-                                  fontSize: 17.0, color: Colors.red)),
-                          Text("(${snapshot.data["eID"]})",
-                              style: const TextStyle(
-                                  fontSize: 17.0, color: Colors.black45)),
-                        ],
-                      )
-                    : const Loading(white: false),
-              );
+              if (snapshot.hasData) {
+                detEmpModel = DetailedEmployeeModel(
+                  uid: snapshot.data["uid"],
+                  name: snapshot.data["name"],
+                  eID: snapshot.data["eID"],
+                  verified: snapshot.data["verified"],
+                  email: snapshot.data["email"],
+                  loc: snapshot.data["loc"],
+                );
+                return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Text(
+                          "Welcome,",
+                          style:
+                              TextStyle(fontSize: 18.0, color: Colors.black54),
+                          textAlign: TextAlign.start,
+                        ),
+                        Text(detEmpModel!.name,
+                            style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold)),
+                        Text("(E-ID: ${detEmpModel!.eID})",
+                            style: const TextStyle(
+                                fontSize: 18.0, color: Colors.black54)),
+                      ],
+                    ));
+              } else {
+                return const Loading(white: false);
+              }
             },
           ),
           const SizedBox(height: 40.0, width: 0.0),
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: const <Widget>[
+            children: <Widget>[
               ListTile(
-                title: Text("Some title"),
+                minVerticalPadding: 10.0,
+                tileColor: Colors.redAccent,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0)),
+                title: const Text("Attendance Recorder",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text("Record your attendance"),
+                trailing:
+                    const Icon(Icons.pan_tool_outlined, color: Colors.white),
               ),
+              const SizedBox(height: 20.0, width: 0.0),
               ListTile(
-                title: Text("Another title"),
+                minVerticalPadding: 10.0,
+                tileColor: Colors.redAccent,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0)),
+                title: const Text("Attendance Summary",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text("Your attendance records"),
+                trailing: const Icon(Icons.date_range, color: Colors.white),
               ),
             ],
           ),
@@ -81,6 +109,7 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
+        // clipBehavior: Clip.none,
       ),
     );
   }
