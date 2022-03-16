@@ -18,17 +18,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Home"),
         actions: <Widget>[
-          IconButton(
-            onPressed: () async {
-              await DatabaseService(uid: uid).verified(false);
-              await AuthenticationService().signOut();
-              Navigator.of(context).pushAndRemoveUntil(
-                  CupertinoPageRoute(builder: (context) => const AuthPage()),
-                  (route) => false);
-            },
-            icon: const Icon(Icons.logout_rounded),
-            tooltip: "Log-out",
-          ),
+          LogginOutHome(uid: uid),
         ],
       ),
       body: ListView(
@@ -89,6 +79,7 @@ class HomePage extends StatelessWidget {
                 subtitle: const Text("Record your attendance"),
                 trailing:
                     const Icon(Icons.pan_tool_outlined, color: Colors.white),
+                onTap: () {},
               ),
               const SizedBox(height: 20.0, width: 0.0),
               ListTile(
@@ -113,6 +104,35 @@ class HomePage extends StatelessWidget {
             parent: AlwaysScrollableScrollPhysics()),
         // clipBehavior: Clip.none,
       ),
+    );
+  }
+}
+
+class LogginOutHome extends StatefulWidget {
+  const LogginOutHome({Key? key, required this.uid}) : super(key: key);
+  final String? uid;
+
+  @override
+  State<LogginOutHome> createState() => _LogginOutHomeState();
+}
+
+class _LogginOutHomeState extends State<LogginOutHome> {
+  bool loggingOut = false;
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        setState(() => loggingOut = true);
+        await DatabaseService(uid: widget.uid).verified(false);
+        await AuthenticationService().signOut();
+        Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(builder: (context) => const AuthPage()),
+            (route) => false);
+      },
+      icon: !loggingOut
+          ? const Icon(Icons.logout_rounded)
+          : const Loading(white: false),
+      tooltip: "Log-out",
     );
   }
 }

@@ -20,6 +20,7 @@ class DatabaseService {
             employee.uid.substring(15, 18).toUpperCase(),
         "verified": employee.verified,
         "loc": employee.loc,
+        "attendance": {},
       });
     } catch (e) {
       print(e.toString());
