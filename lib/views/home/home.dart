@@ -84,7 +84,8 @@ class HomePage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0)),
                 title: const Text("Attendance Recorder",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
                 subtitle: const Text("Record your attendance"),
                 trailing:
                     const Icon(Icons.pan_tool_outlined, color: Colors.white),
@@ -97,7 +98,8 @@ class HomePage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0)),
                 title: const Text("Attendance Summary",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
                 subtitle: const Text("Your attendance records"),
                 trailing: const Icon(Icons.date_range, color: Colors.white),
               ),
