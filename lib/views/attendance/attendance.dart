@@ -55,8 +55,9 @@ class _AttendancePageState extends State<AttendancePage> {
                                   coordVar) {
                             DatabaseService(uid: widget.uid)
                                 .attendanceReporting(EmpAttendanceModel(
+                              geoloc: geoPointCoord,
                               time: Timestamp.now(),
-                              reporting: true,
+                              reporting: widget.reporting,
                             ));
                             setState(() {
                               loading = false;

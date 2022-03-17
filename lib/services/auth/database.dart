@@ -82,13 +82,19 @@ class DatabaseService {
   }
 
   Future attendanceReporting(EmpAttendanceModel empAttendance) async {
+    String date = empAttendance.time!.toDate().day.toString() +
+        "_" +
+        empAttendance.time!.toDate().month.toString() +
+        "_" +
+        empAttendance.time!.toDate().year.toString();
+
     try {
       if (empAttendance.reporting!) {
         try {
           await _empAttCollection.doc(uid).update({
-            "attendance.${empAttendance.time!.toDate()}":
-                FieldValue.arrayUnion([
+            "attendance.$date": FieldValue.arrayUnion([
               {
+                "time": empAttendance.time,
                 "reporting": true,
                 "geoloc": empAttendance.geoloc,
               }
@@ -98,7 +104,8 @@ class DatabaseService {
           await _empAttCollection.doc(uid).update({
             "attendance": FieldValue.arrayUnion([
               {
-                "${empAttendance.time!.toDate()}": {
+                date: {
+                  "time": empAttendance.time,
                   "reporting": true,
                   "geoloc": empAttendance.geoloc,
                 }
@@ -109,9 +116,9 @@ class DatabaseService {
       } else {
         try {
           await _empAttCollection.doc(uid).update({
-            "attendance.${empAttendance.time!.toDate()}":
-                FieldValue.arrayUnion([
+            "attendance.$date": FieldValue.arrayUnion([
               {
+                "time": empAttendance.time,
                 "reporting": false,
                 "geoloc": empAttendance.geoloc,
               }
@@ -121,7 +128,8 @@ class DatabaseService {
           await _empAttCollection.doc(uid).update({
             "attendance": FieldValue.arrayUnion([
               {
-                "${empAttendance.time!.toDate()}": {
+                date: {
+                  "time": empAttendance.time,
                   "reporting": false,
                   "geoloc": empAttendance.geoloc,
                 }
