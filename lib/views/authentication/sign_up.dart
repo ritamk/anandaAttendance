@@ -1,6 +1,7 @@
 import 'package:face_rec/services/auth/authentication.dart';
 import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/shared/text_field/auth_text_field.dart';
 import 'package:face_rec/views/home/home.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,10 +143,10 @@ class _SignUpPageState extends State<SignUpPage> {
               (route) => false)
           : setState(() {
               loading = false;
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text(
-                    "Couldn't sign-up, please try again later.\nPlease check credentials and/or network connection."),
-              ));
+              commonSnackbar(
+                "Couldn't sign-up, please try again later.\nPlease check credentials and/or network connection.",
+                context,
+              );
             });
     }
   }

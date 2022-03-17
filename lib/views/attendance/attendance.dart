@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:face_rec/models/attendance_model.dart';
 import 'package:face_rec/services/auth/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -61,25 +62,21 @@ class _AttendancePageState extends State<AttendancePage> {
                             ));
                             setState(() {
                               loading = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          "Geolocation verification successful.")));
+                              commonSnackbar(
+                                  "Geolocation verification successful.",
+                                  context);
                             });
                           } else {
                             setState(() {
                               loading = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          "Geolocation verification failed.")));
+                              commonSnackbar(
+                                  "Geolocation verification failed.", context);
                             });
                           }
                         } catch (e) {
                           setState(() {
                             loading = false;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(e.toString())));
+                            commonSnackbar(e.toString(), context);
                           });
                         }
                       },

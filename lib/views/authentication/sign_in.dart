@@ -1,6 +1,7 @@
 import 'package:face_rec/services/auth/authentication.dart';
 import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/shared/text_field/auth_text_field.dart';
 import 'package:face_rec/views/authentication/eid_dialogue.dart';
 import 'package:flutter/cupertino.dart';
@@ -145,10 +146,9 @@ class _SignInPageState extends State<SignInPage> {
       } else {
         setState(() {
           loading = false;
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Couldn't sign-in, please try again.\nPlease check credentials and/or network connection."),
-          ));
+          commonSnackbar(
+              "Couldn't sign-in, please try again.\nPlease check credentials and/or network connection.",
+              context);
         });
       }
     }

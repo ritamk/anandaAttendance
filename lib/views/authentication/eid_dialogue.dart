@@ -1,6 +1,7 @@
 import 'package:face_rec/services/auth/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/providers.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/shared/text_field/auth_text_field.dart';
 import 'package:face_rec/views/home/home.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,13 +84,11 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
                             } else {
                               setState(() {
                                 loading = false;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(originalEid.isNotEmpty
+                                commonSnackbar(
+                                    originalEid.isNotEmpty
                                         ? "Incorrect Employee ID"
-                                        : "Something went wrong, please try again"),
-                                  ),
-                                );
+                                        : "Something went wrong, please try again\nRe-check your credentials",
+                                    context);
                               });
                               DatabaseService(uid: user).verified(false);
                             }
