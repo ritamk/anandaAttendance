@@ -24,31 +24,19 @@ class AttReportStatePage extends State<AttReportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Report")),
-      body: CupertinoDatePicker(
-        initialDateTime: DateTime.now(),
-        onDateTimeChanged: (dateTime) {},
-        mode: CupertinoDatePickerMode.date,
-        dateOrder: DatePickerDateOrder.dmy,
-        minimumYear: currYear,
-        maximumYear: currYear,
-        maximumDate: DateTime.now(),
+      body: SizedBox(
+        height: 200.0,
+        width: double.infinity,
+        child: CupertinoDatePicker(
+          initialDateTime: DateTime.now(),
+          onDateTimeChanged: (dateTime) {},
+          mode: CupertinoDatePickerMode.date,
+          dateOrder: DatePickerDateOrder.dmy,
+          minimumYear: currYear,
+          maximumYear: currYear,
+          maximumDate: DateTime.now(),
+        ),
       ),
     );
   }
 }
-
-// ListView(
-//         children: <Widget>[
-//           Container(
-//             child: CupertinoDatePicker(
-//                 initialDateTime: DateTime.now(),
-//                 onDateTimeChanged: (dateTime) {}),
-//           ),
-//         ],
-//         shrinkWrap: true,
-//         primary: false,
-//         padding: const EdgeInsets.all(12.0),
-//         physics: const BouncingScrollPhysics(
-//             parent: AlwaysScrollableScrollPhysics()),
-//         // clipBehavior: Clip.none,
-//       ),
