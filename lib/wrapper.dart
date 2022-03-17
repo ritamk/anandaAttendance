@@ -57,7 +57,7 @@ class WrapperBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40.0, width: 0.0),
-          const Loading(white: false),
+          const Loading(white: false, rad: 14.0),
         ],
       ),
     );

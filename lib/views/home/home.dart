@@ -139,7 +139,7 @@ class _LogginOutHomeState extends State<LogginOutHome> {
       },
       icon: !loggingOut
           ? const Icon(Icons.logout_rounded)
-          : const Loading(white: false, rad: 14.0),
+          : const Loading(white: false),
       tooltip: "Log-out",
     );
   }
