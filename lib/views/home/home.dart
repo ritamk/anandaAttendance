@@ -2,7 +2,7 @@ import 'package:face_rec/models/employee_model.dart';
 import 'package:face_rec/services/auth/authentication.dart';
 import 'package:face_rec/services/auth/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
-import 'package:face_rec/views/attendance/attendance.dart';
+import 'package:face_rec/views/attendance/att_report.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';
 import 'package:face_rec/views/home/att_in_out_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -96,6 +96,9 @@ class HomePage extends StatelessWidget {
                       subtitle: const Text("Your attendance records"),
                       trailing:
                           const Icon(Icons.date_range, color: Colors.white),
+                      onTap: () => Navigator.of(context).push(
+                          CupertinoPageRoute(
+                              builder: (context) => AttReportPage(uid: uid!))),
                     ),
                   ],
                 ),
