@@ -16,16 +16,16 @@ class AttendanceInOrOutDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
       title: const Text("Attendance type"),
-      content: const Text("Are you reporting to your location or leaving?"),
+      content: const Text("Are you entering or leaving the location?"),
       actions: <Widget>[
         CupertinoDialogAction(
           textStyle: const TextStyle(color: Colors.blue, fontSize: 16.0),
-          child: const Text("In"),
+          child: const Text("Entering"),
           onPressed: () => toAttPage(context, true),
         ),
         CupertinoDialogAction(
           textStyle: const TextStyle(color: Colors.blue, fontSize: 16.0),
-          child: const Text("Out"),
+          child: const Text("Leaving"),
           onPressed: () => toAttPage(context, false),
         ),
       ],
