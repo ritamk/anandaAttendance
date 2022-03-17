@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EmpAttendanceModel {
   final Timestamp? time;
-  final Timestamp? day;
   final bool? reporting;
+  final GeoPoint? geoloc;
+  final String? eID;
 
   EmpAttendanceModel({
     this.time,
-    this.day,
     this.reporting,
+    this.geoloc,
+    this.eID,
   });
 }

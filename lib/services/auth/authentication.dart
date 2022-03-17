@@ -17,7 +17,7 @@ class AuthenticationService {
 
       return _employeefromFB(userCredential.user);
     } catch (e) {
-      print(e.toString());
+      print("signInWithMailPass: ${e.toString()}");
       return -1;
     }
   }
@@ -40,7 +40,7 @@ class AuthenticationService {
 
       return _employeefromFB(user)?.uid;
     } catch (e) {
-      print(e.toString());
+      print("registerWithMailPass: ${e.toString()}");
       return -1;
     }
   }
@@ -49,7 +49,7 @@ class AuthenticationService {
     try {
       return await _firebaseAuth.signOut();
     } catch (e) {
-      print(e.toString());
+      print("signOut: ${e.toString()}");
       return -1;
     }
   }

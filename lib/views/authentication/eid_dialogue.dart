@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:face_rec/models/employee_model.dart';
 import 'package:face_rec/services/auth/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/providers.dart';
@@ -8,7 +6,6 @@ import 'package:face_rec/views/home/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 
 class EidConfirmDialog extends StatefulWidget {
   const EidConfirmDialog({Key? key}) : super(key: key);
@@ -20,15 +17,10 @@ class EidConfirmDialog extends StatefulWidget {
 class _EidConfirmDialogState extends State<EidConfirmDialog> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final FocusNode _eidNode = FocusNode();
-  final coordVar = 0.0005;
   String eid = "";
   String originalEid = "";
   bool loading = false;
   String? user;
-  EmployeeAuthModel? employeeAuth;
-  Position? coord;
-  GeoPoint? geoPointCoord;
-  GeoPoint? desiredCoord;
 
   @override
   Widget build(BuildContext context) {
@@ -75,62 +67,26 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
                         setState(() {
                           loading = true;
                         });
-                        try {
-                          coord = await _determinePosition();
-                        } catch (e) {
-                          setState(() {
-                            loading = false;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.toString()),
-                              ),
-                            );
-                          });
-                        }
-                        geoPointCoord =
-                            GeoPoint(coord!.latitude, coord!.longitude);
                         await DatabaseService(uid: user)
-                            .eIDAndLoc()
+                            .eIDFromUID()
                             .then((value) {
-                          originalEid = value.eid;
-                          desiredCoord = value.loc;
+                          originalEid = value ?? "";
                         }).whenComplete(() {
                           if (_globalKey.currentState!.validate()) {
                             if (eid.toUpperCase() == originalEid) {
-                              if ((geoPointCoord!.latitude -
-                                              desiredCoord!.latitude)
-                                          .abs() <
-                                      coordVar &&
-                                  (geoPointCoord!.longitude -
-                                              desiredCoord!.longitude)
-                                          .abs() <
-                                      coordVar) {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    CupertinoPageRoute(
-                                      builder: (context) => HomePage(uid: user),
-                                    ),
-                                    (route) => false);
-                                DatabaseService(uid: user).verified(true);
-                              } else {
-                                setState(() {
-                                  loading = false;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(originalEid.isNotEmpty
-                                          ? "Incorrect Employee ID"
-                                          : "Something went wrong, please try again"),
-                                    ),
-                                  );
-                                });
-                                DatabaseService(uid: user).verified(false);
-                              }
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  CupertinoPageRoute(
+                                    builder: (context) => HomePage(uid: user),
+                                  ),
+                                  (route) => false);
+                              DatabaseService(uid: user).verified(true);
                             } else {
                               setState(() {
                                 loading = false;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(originalEid.isNotEmpty
-                                        ? "Incorrect credentials, please check"
+                                        ? "Incorrect Employee ID"
                                         : "Something went wrong, please try again"),
                                   ),
                                 );
@@ -149,41 +105,5 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
         ),
       ),
     );
-  }
-
-  Future<Position?> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions');
-    }
-
-    try {
-      return await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-    } catch (e) {
-      return Geolocator.getLastKnownPosition();
-    }
-  }
-
-  @override
-  void dispose() {
-    _eidNode.dispose();
-    super.dispose();
   }
 }

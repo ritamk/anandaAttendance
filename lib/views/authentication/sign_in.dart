@@ -115,6 +115,8 @@ class _SignInPageState extends State<SignInPage> {
               ],
             ),
           ),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
         ),
       ),
     );

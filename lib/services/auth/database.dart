@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:face_rec/models/attendance_model.dart';
 import 'package:face_rec/models/employee_model.dart';
 
 final CollectionReference _employeeCollection =
     FirebaseFirestore.instance.collection("Employee");
+
+final CollectionReference _empAttCollection =
+    FirebaseFirestore.instance.collection("EmpAttendance");
 
 class DatabaseService {
   final String? uid;
@@ -11,33 +15,40 @@ class DatabaseService {
 
   Future setEmployeeData(DetailedEmployeeModel employee) async {
     try {
+      String eid = employee.name.substring(0, 3).toUpperCase() +
+          employee.uid.substring(0, 3).toUpperCase() +
+          employee.uid.substring(15, 18).toUpperCase();
+      try {
+        await _empAttCollection.doc(uid).set({
+          "attendance": {},
+          "loc": employee.loc,
+          "eID": eid,
+        });
+      } catch (e) {
+        print("setEmpAttData: ${e.toString()}");
+        return -2;
+      }
       return await _employeeCollection.doc(uid).set({
         "uid": employee.uid,
         "name": employee.name,
         "email": employee.email,
-        "eID": employee.name.substring(0, 3).toUpperCase() +
-            employee.uid.substring(0, 3).toUpperCase() +
-            employee.uid.substring(15, 18).toUpperCase(),
+        "eID": eid,
         "verified": employee.verified,
         "loc": employee.loc,
-        "attendance": {},
       });
     } catch (e) {
-      print(e.toString());
+      print("setEmployeeData: ${e.toString()}");
       return -1;
     }
   }
 
-  Future<EmployeeAuthModel> eIDAndLoc() async {
+  Future<String?> eIDFromUID() async {
     try {
       DocumentSnapshot doc = await _employeeCollection.doc(uid).get();
-      return EmployeeAuthModel(
-        eid: doc.get("eID"),
-        loc: doc.get("loc"),
-      );
+      return doc.get("eID");
     } catch (e) {
-      print("eIDAndLoc: ${e.toString()}");
-      return EmployeeAuthModel(eid: "", loc: null);
+      print("eIDFromUID: ${e.toString()}");
+      return null;
     }
   }
 
@@ -46,7 +57,7 @@ class DatabaseService {
       DocumentSnapshot doc = await _employeeCollection.doc(uid).get();
       return await doc.get("verified");
     } catch (e) {
-      print("verified: ${e.toString()}");
+      print("verifiedOrNot: ${e.toString()}");
       return false;
     }
   }
@@ -55,7 +66,7 @@ class DatabaseService {
     try {
       return await _employeeCollection.doc(uid).update({"verified": yesOrNo});
     } catch (e) {
-      print(e.toString());
+      print("verified: ${e.toString()}");
       return -1;
     }
   }
@@ -65,7 +76,62 @@ class DatabaseService {
       DocumentSnapshot snap = await _employeeCollection.doc(uid).get();
       return snap.data();
     } catch (e) {
-      print("employee: ${e.toString()}");
+      print("employeeDetail: ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future attendanceReporting(EmpAttendanceModel empAttendance) async {
+    try {
+      if (empAttendance.reporting!) {
+        try {
+          await _empAttCollection.doc(uid).update({
+            "attendance.${empAttendance.time!.toDate()}":
+                FieldValue.arrayUnion([
+              {
+                "reporting": true,
+                "geoloc": empAttendance.geoloc,
+              }
+            ]),
+          });
+        } catch (e) {
+          await _empAttCollection.doc(uid).update({
+            "attendance": FieldValue.arrayUnion([
+              {
+                "${empAttendance.time!.toDate()}": {
+                  "reporting": true,
+                  "geoloc": empAttendance.geoloc,
+                }
+              }
+            ]),
+          });
+        }
+      } else {
+        try {
+          await _empAttCollection.doc(uid).update({
+            "attendance.${empAttendance.time!.toDate()}":
+                FieldValue.arrayUnion([
+              {
+                "reporting": false,
+                "geoloc": empAttendance.geoloc,
+              }
+            ]),
+          });
+        } catch (e) {
+          await _empAttCollection.doc(uid).update({
+            "attendance": FieldValue.arrayUnion([
+              {
+                "${empAttendance.time!.toDate()}": {
+                  "reporting": false,
+                  "geoloc": empAttendance.geoloc,
+                }
+              }
+            ]),
+          });
+        }
+      }
+    } catch (e) {
+      print("attendanceReporting: ${e.toString}");
       return null;
     }
   }

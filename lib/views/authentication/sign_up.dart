@@ -122,6 +122,8 @@ class _SignUpPageState extends State<SignUpPage> {
               ],
             ),
           ),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
         ),
       ),
     );

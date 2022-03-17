@@ -23,13 +23,3 @@ class DetailedEmployeeModel {
     required this.loc,
   });
 }
-
-class EmployeeAuthModel {
-  final String eid;
-  final GeoPoint? loc;
-
-  EmployeeAuthModel({
-    required this.eid,
-    this.loc,
-  });
-}
