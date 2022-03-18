@@ -82,11 +82,13 @@ class _AttendancePageState extends State<AttendancePage> {
                       },
                       child: Column(
                         children: const <Widget>[
-                          Icon(Icons.location_on, size: 24.0),
+                          Icon(Icons.location_on,
+                              size: 24.0, color: Colors.blue),
                           SizedBox(height: 20.0, width: 0.0),
                           Text(
                             "Verify geolocation",
-                            style: TextStyle(fontSize: 18.0),
+                            style:
+                                TextStyle(fontSize: 18.0, color: Colors.blue),
                           ),
                         ],
                       ),

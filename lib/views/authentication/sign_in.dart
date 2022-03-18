@@ -89,15 +89,12 @@ class _SignInPageState extends State<SignInPage> {
                       onPressed: () {},
                       child: const Text(
                         "Forgot Password?",
-                        style: TextStyle(color: Colors.red),
+                        style: TextStyle(color: Colors.blue),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 40.0,
-                  width: 0.0,
-                ),
+                const SizedBox(height: 40.0, width: 0.0),
                 TextButton(
                   style: authSignInBtnStyle(),
                   onPressed: () async => await signInLogic(context),
