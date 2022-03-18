@@ -141,9 +141,15 @@ class DatabaseService {
     }
   }
 
-  Future attendanceSummary(DateTime time) async {
-    try {} catch (e) {
+  Future<List?> attendanceSummary(DateTime time) async {
+    String date = time.toString().substring(0, 10);
+    try {
+      DocumentSnapshot snap = await _empAttCollection.doc(uid).get();
+
+      return snap.get("attendance.$date");
+    } catch (e) {
       print("attendanceSummary: ${e.toString()}");
+      return List.empty();
     }
   }
 }

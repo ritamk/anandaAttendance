@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:face_rec/services/auth/database.dart';
+import 'package:face_rec/shared/loading/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AttReportPage extends StatefulWidget {
   const AttReportPage({Key? key, required this.uid}) : super(key: key);
@@ -13,6 +15,7 @@ class AttReportStatePage extends State<AttReportPage> {
   late DateTime today;
   late int currMonth;
   late int currYear;
+  late DateTime selectedDate;
 
   @override
   void initState() {
@@ -20,6 +23,7 @@ class AttReportStatePage extends State<AttReportPage> {
     today = DateTime.now();
     currMonth = today.month;
     currYear = today.year;
+    selectedDate = today;
   }
 
   @override
@@ -36,10 +40,57 @@ class AttReportStatePage extends State<AttReportPage> {
                 initialDate: today,
                 firstDate: DateTime(currYear, currMonth - 1, 1),
                 lastDate: today,
-                onDateChanged: (date) {},
+                onDateChanged: (date) {
+                  setState(() => selectedDate = date);
+                },
               ),
             ),
-            const SizedBox(height: 40.0, width: 0.0),
+            const SizedBox(height: 20.0, width: 0.0),
+            FutureBuilder<List?>(
+                future: DatabaseService(uid: widget.uid)
+                    .attendanceSummary(selectedDate),
+                initialData: null,
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? snapshot.data!.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: Text(
+                                      DateFormat.Hms()
+                                          .format(snapshot.data![index]["time"]
+                                              .toDate())
+                                          .toString(),
+                                      style: const TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold)),
+                                  leading: snapshot.data![index]["reporting"]
+                                      ? Icon(Icons.login_rounded,
+                                          color: Colors.green.shade800)
+                                      : Icon(Icons.logout_rounded,
+                                          color: Colors.red.shade800),
+                                );
+                              },
+                              padding: const EdgeInsets.all(16.0),
+                              shrinkWrap: true,
+                              clipBehavior: Clip.none,
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const <Widget>[
+                                Icon(Icons.error, color: Colors.red),
+                                SizedBox(height: 0.0, width: 20.0),
+                                Text(
+                                  "No data for the selected date",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
+                      : const Loading(white: false);
+                }),
           ],
         ),
         physics: const BouncingScrollPhysics(

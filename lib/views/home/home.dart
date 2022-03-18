@@ -140,7 +140,7 @@ class _LogginOutHomeState extends State<LogginOutHome> {
             (route) => false);
       },
       icon: !loggingOut
-          ? const Icon(Icons.logout_rounded)
+          ? const Icon(Icons.power_settings_new)
           : const Loading(white: false),
       tooltip: "Log-out",
     );
