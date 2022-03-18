@@ -51,7 +51,7 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
                 const SizedBox(height: 20.0, width: 0.0),
                 Consumer(
                   builder: (_, ref, __) {
-                    user = ref.watch(userStreamProvider).value?.uid;
+                    user = UserSharedPref.getUser();
                     return CupertinoDialogAction(
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),

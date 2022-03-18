@@ -55,7 +55,7 @@ class AuthenticationService {
 
   Future<String?> currentUser() async {
     try {
-      return _firebaseAuth.currentUser?.uid;
+      return _firebaseAuth.currentUser?.uid ?? "noUser";
     } catch (e) {
       print("currentUser: ${e.toString()}");
       return null;

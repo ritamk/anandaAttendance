@@ -50,14 +50,10 @@ class _WrapperState extends ConsumerState<Wrapper> {
           initialData: "noUser",
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.data == "noUser") {
-              if (snapshot.data.isNotEmpty) {
-                if (snapshot.data != null) {
-                  setUser(snapshot.data);
-                  if (verified) {
-                    return HomePage(uid: snapshot.data);
-                  } else {
-                    return const AuthPage();
-                  }
+              if (snapshot.data != null) {
+                setUser(snapshot.data);
+                if (verified) {
+                  return HomePage(uid: snapshot.data);
                 } else {
                   return const AuthPage();
                 }
