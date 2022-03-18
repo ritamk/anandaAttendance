@@ -56,27 +56,46 @@ class AttReportStatePage extends State<AttReportPage> {
                           ? ListView.builder(
                               itemCount: snapshot.data!.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return !snapshot.data![index]["leave"]
-                                    ? ListTile(
-                                        title: Text(
-                                            DateFormat.Hms()
-                                                .format(snapshot.data![index]
-                                                        ["time"]
-                                                    .toDate())
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontSize: 16.0,
-                                                fontWeight: FontWeight.bold)),
-                                        leading: snapshot.data![index]
-                                                ["reporting"]
-                                            ? Icon(Icons.login_rounded,
-                                                color: Colors.green.shade800)
-                                            : Icon(Icons.logout_rounded,
-                                                color: Colors.red.shade800),
-                                      )
-                                    : const ListTile(
-                                        title: Text("On leave."),
-                                        leading: Icon(Icons.check));
+                                try {
+                                  return !snapshot.data![index]["leave"]
+                                      ? ListTile(
+                                          title: Text(
+                                              DateFormat.Hms()
+                                                  .format(snapshot.data![index]
+                                                          ["time"]
+                                                      .toDate())
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.bold)),
+                                          leading: snapshot.data![index]
+                                                  ["reporting"]
+                                              ? Icon(Icons.login_rounded,
+                                                  color: Colors.green.shade800)
+                                              : Icon(Icons.logout_rounded,
+                                                  color: Colors.red.shade800),
+                                        )
+                                      : const ListTile(
+                                          title: Text("On leave."),
+                                          leading: Icon(Icons.check));
+                                } catch (e) {
+                                  return ListTile(
+                                    title: Text(
+                                        DateFormat.Hms()
+                                            .format(snapshot.data![index]
+                                                    ["time"]
+                                                .toDate())
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold)),
+                                    leading: snapshot.data![index]["reporting"]
+                                        ? Icon(Icons.login_rounded,
+                                            color: Colors.green.shade800)
+                                        : Icon(Icons.logout_rounded,
+                                            color: Colors.red.shade800),
+                                  );
+                                }
                               },
                               padding: const EdgeInsets.all(16.0),
                               shrinkWrap: true,
