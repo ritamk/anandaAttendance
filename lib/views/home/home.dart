@@ -1,6 +1,6 @@
 import 'package:face_rec/models/employee_model.dart';
-import 'package:face_rec/services/auth/authentication.dart';
-import 'package:face_rec/services/auth/database.dart';
+import 'package:face_rec/services/authentication.dart';
+import 'package:face_rec/services/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/views/attendance/att_report.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';

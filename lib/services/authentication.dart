@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:face_rec/models/employee_model.dart';
-import 'package:face_rec/services/auth/database.dart';
+import 'package:face_rec/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationService {

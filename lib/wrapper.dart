@@ -1,4 +1,4 @@
-import 'package:face_rec/services/auth/database.dart';
+import 'package:face_rec/services/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/providers.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';

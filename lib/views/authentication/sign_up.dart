@@ -1,4 +1,4 @@
-import 'package:face_rec/services/auth/authentication.dart';
+import 'package:face_rec/services/authentication.dart';
 import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
