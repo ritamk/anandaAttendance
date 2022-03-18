@@ -15,7 +15,7 @@ class AuthenticationService {
       UserCredential userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: mail, password: pass);
 
-      return _employeefromFB(userCredential.user);
+      return _employeefromFB(userCredential.user)?.uid;
     } catch (e) {
       print("signInWithMailPass: ${e.toString()}");
       return -1;
