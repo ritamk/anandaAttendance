@@ -82,11 +82,8 @@ class DatabaseService {
   }
 
   Future attendanceReporting(EmpAttendanceModel empAttendance) async {
-    String date = empAttendance.time!.toDate().day.toString() +
-        "_" +
-        empAttendance.time!.toDate().month.toString() +
-        "_" +
-        empAttendance.time!.toDate().year.toString();
+    String date =
+        empAttendance.time!.toDate().toString().substring(0, 10).trim();
 
     try {
       if (empAttendance.reporting!) {
@@ -141,6 +138,12 @@ class DatabaseService {
     } catch (e) {
       print("attendanceReporting: ${e.toString}");
       return null;
+    }
+  }
+
+  Future attendanceSummary(DateTime time) async {
+    try {} catch (e) {
+      print("attendanceSummary: ${e.toString()}");
     }
   }
 }

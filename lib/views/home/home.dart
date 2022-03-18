@@ -36,11 +36,11 @@ class HomePage extends StatelessWidget {
               email: snapshot.data["email"],
               loc: snapshot.data["loc"],
             );
-            return ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                  child: Column(
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -59,56 +59,55 @@ class HomePage extends StatelessWidget {
                               fontSize: 18.0, color: Colors.black54)),
                     ],
                   ),
-                ),
-                const SizedBox(height: 40.0, width: 0.0),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    ListTile(
-                      minVerticalPadding: 10.0,
-                      tileColor: Colors.redAccent,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                      title: const Text("Attendance Recorder",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 17.0)),
-                      subtitle: const Text("Record your attendance"),
-                      trailing: const Icon(Icons.pan_tool_outlined,
-                          color: Colors.white),
-                      onTap: () =>
-                          Navigator.of(context).push(CupertinoDialogRoute(
-                        builder: (context) => AttendanceInOrOutDialog(
-                            uid: uid!, loc: detEmpModel!.loc!),
-                        context: context,
-                      )),
-                    ),
-                    const SizedBox(height: 20.0, width: 0.0),
-                    ListTile(
-                      minVerticalPadding: 10.0,
-                      tileColor: Colors.redAccent,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                      title: const Text("Attendance Summary",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 17.0)),
-                      subtitle: const Text("Your attendance records"),
-                      trailing:
-                          const Icon(Icons.date_range, color: Colors.white),
-                      onTap: () => Navigator.of(context).push(
-                          CupertinoPageRoute(
-                              builder: (context) => AttReportPage(uid: uid!))),
-                    ),
-                  ],
-                ),
-              ],
-              shrinkWrap: true,
-              primary: false,
-              padding: const EdgeInsets.all(12.0),
+                  const SizedBox(height: 20.0, width: 0.0),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        minVerticalPadding: 10.0,
+                        tileColor: Colors.redAccent,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                        title: const Text("Attendance Recorder",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 17.0)),
+                        subtitle: const Text("Record your attendance"),
+                        trailing: const Icon(Icons.pan_tool_outlined,
+                            color: Colors.white),
+                        onTap: () =>
+                            Navigator.of(context).push(CupertinoDialogRoute(
+                          builder: (context) => AttendanceInOrOutDialog(
+                              uid: uid!, loc: detEmpModel!.loc!),
+                          context: context,
+                        )),
+                      ),
+                      const SizedBox(height: 20.0, width: 0.0),
+                      ListTile(
+                        minVerticalPadding: 10.0,
+                        tileColor: Colors.redAccent,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                        title: const Text("Attendance Summary",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 17.0)),
+                        subtitle: const Text("Your attendance records"),
+                        trailing:
+                            const Icon(Icons.date_range, color: Colors.white),
+                        onTap: () => Navigator.of(context).push(
+                            CupertinoPageRoute(
+                                builder: (context) =>
+                                    AttReportPage(uid: uid!))),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(18.0),
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
-              // clipBehavior: Clip.none,
+              clipBehavior: Clip.none,
             );
           } else {
             return const Center(child: Loading(white: false));
