@@ -33,7 +33,6 @@ class DatabaseService {
         "name": employee.name,
         "email": employee.email,
         "eID": eid,
-        "verified": employee.verified,
         "loc": employee.loc,
       });
     } catch (e) {
@@ -49,25 +48,6 @@ class DatabaseService {
     } catch (e) {
       print("eIDFromUID: ${e.toString()}");
       return null;
-    }
-  }
-
-  Future<bool> verifiedOrNot() async {
-    try {
-      DocumentSnapshot doc = await _employeeCollection.doc(uid).get();
-      return await doc.get("verified");
-    } catch (e) {
-      print("verifiedOrNot: ${e.toString()}");
-      return false;
-    }
-  }
-
-  Future verified(bool yesOrNo) async {
-    try {
-      return await _employeeCollection.doc(uid).update({"verified": yesOrNo});
-    } catch (e) {
-      print("verified: ${e.toString()}");
-      return -1;
     }
   }
 

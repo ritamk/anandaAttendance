@@ -34,7 +34,6 @@ class AuthenticationService {
         name: name,
         email: mail,
         eID: "",
-        verified: true,
         loc: const GeoPoint(23.259086, 87.871203),
       ));
 
@@ -55,6 +54,11 @@ class AuthenticationService {
   }
 
   Future<String?> currentUser() async {
-    return _firebaseAuth.currentUser?.uid;
+    try {
+      return _firebaseAuth.currentUser?.uid;
+    } catch (e) {
+      print("currentUser: ${e.toString()}");
+      return null;
+    }
   }
 }

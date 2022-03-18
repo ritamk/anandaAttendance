@@ -1,4 +1,5 @@
 import 'package:face_rec/services/authentication.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
@@ -137,17 +138,22 @@ class _SignUpPageState extends State<SignUpPage> {
       });
       dynamic result =
           await AuthenticationService().registerWithMailPass(name, mail, pass);
-      result != null
-          ? Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(builder: (builder) => HomePage(uid: result)),
-              (route) => false)
-          : setState(() {
-              loading = false;
-              commonSnackbar(
-                "Couldn't sign-up, please try again later.\nPlease check credentials and/or network connection.",
-                context,
-              );
-            });
+      if (result != null) {
+        await UserSharedPref.setUser(result);
+        await UserSharedPref.setVerifiedOrNot(true);
+        loading = false;
+        Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(builder: (builder) => HomePage(uid: result)),
+            (route) => false);
+      } else {
+        setState(() {
+          loading = false;
+          commonSnackbar(
+            "Couldn't sign-up, please try again later.\nPlease check credentials and/or network connection.",
+            context,
+          );
+        });
+      }
     }
   }
 

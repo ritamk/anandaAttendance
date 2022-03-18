@@ -1,4 +1,5 @@
 import 'package:face_rec/services/authentication.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
@@ -138,6 +139,7 @@ class _SignInPageState extends State<SignInPage> {
       dynamic result =
           await AuthenticationService().signInWithMailPass(mail, pass);
       if (result != null) {
+        await UserSharedPref.setUser(result);
         loading = false;
         Navigator.of(context).push(CupertinoDialogRoute(
           builder: (context) => const EidConfirmDialog(),
@@ -147,7 +149,7 @@ class _SignInPageState extends State<SignInPage> {
         setState(() {
           loading = false;
           commonSnackbar(
-              "Couldn't sign-in, please try again.\nPlease check credentials and/or network connection.",
+              "Couldn't sign-in, please try again.\nPlease check credentials and network connection.",
               context);
         });
       }

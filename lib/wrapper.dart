@@ -1,6 +1,6 @@
-import 'package:face_rec/services/database.dart';
+import 'package:face_rec/services/authentication.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/loading/loading.dart';
-import 'package:face_rec/shared/providers.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';
 import 'package:face_rec/views/home/home.dart';
 import 'package:flutter/material.dart';
@@ -14,29 +14,69 @@ class Wrapper extends ConsumerStatefulWidget {
 }
 
 class _WrapperState extends ConsumerState<Wrapper> {
+  late bool verified;
   String? user;
+  bool timeOut = false;
+  @override
+  void initState() {
+    super.initState();
+    if (UserSharedPref.getUser() != null) {
+      user = UserSharedPref.getUser();
+    } else {
+      user = null;
+    }
+    if (UserSharedPref.getVerifiedOrNot() != null) {
+      verified = UserSharedPref.getVerifiedOrNot()!;
+    } else {
+      verified = false;
+      UserSharedPref.setVerifiedOrNot(verified);
+    }
+    Future.delayed(const Duration(seconds: 2))
+        .then((value) => setState(() => timeOut = true));
+  }
 
   @override
   Widget build(BuildContext context) {
-    user = ref.watch(userStreamProvider).value?.uid;
-
-    return user != null
-        ? FutureBuilder<bool?>(
-            future: DatabaseService(uid: user).verifiedOrNot(),
-            initialData: null,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data) {
-                  return HomePage(uid: user);
+    if (timeOut) {
+      if (user != null) {
+        if (verified) {
+          return HomePage(uid: UserSharedPref.getUser());
+        } else {
+          return const AuthPage();
+        }
+      } else {
+        return FutureBuilder<String?>(
+          future: AuthenticationService().currentUser(),
+          initialData: "noUser",
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.data == "noUser") {
+              if (snapshot.data.isNotEmpty) {
+                if (snapshot.data != null) {
+                  setUser(snapshot.data);
+                  if (verified) {
+                    return HomePage(uid: snapshot.data);
+                  } else {
+                    return const AuthPage();
+                  }
                 } else {
                   return const AuthPage();
                 }
               } else {
-                return const WrapperBody();
+                return const AuthPage();
               }
-            },
-          )
-        : const AuthPage();
+            } else {
+              return const WrapperBody();
+            }
+          },
+        );
+      }
+    } else {
+      return const WrapperBody();
+    }
+  }
+
+  Future setUser(String uid) async {
+    await UserSharedPref.setUser(uid);
   }
 }
 

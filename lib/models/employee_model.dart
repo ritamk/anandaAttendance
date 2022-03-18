@@ -11,14 +11,12 @@ class DetailedEmployeeModel {
   final String name;
   final String eID;
   final String email;
-  final bool verified;
   final GeoPoint? loc;
 
   DetailedEmployeeModel({
     required this.uid,
     required this.name,
     required this.eID,
-    required this.verified,
     required this.email,
     required this.loc,
   });

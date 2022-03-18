@@ -1,6 +1,7 @@
 import 'package:face_rec/models/employee_model.dart';
 import 'package:face_rec/services/authentication.dart';
 import 'package:face_rec/services/database.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/views/attendance/att_report.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';
@@ -32,7 +33,6 @@ class HomePage extends StatelessWidget {
               uid: snapshot.data["uid"],
               name: snapshot.data["name"],
               eID: snapshot.data["eID"],
-              verified: snapshot.data["verified"],
               email: snapshot.data["email"],
               loc: snapshot.data["loc"],
             );
@@ -133,8 +133,9 @@ class _LogginOutHomeState extends State<LogginOutHome> {
     return IconButton(
       onPressed: () async {
         setState(() => loggingOut = true);
-        await DatabaseService(uid: widget.uid).verified(false);
         await AuthenticationService().signOut();
+        await UserSharedPref.setVerifiedOrNot(false);
+        await UserSharedPref.setUser("noUser");
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(builder: (context) => const AuthPage()),
             (route) => false);

@@ -10,7 +10,7 @@ final userStreamProvider = StreamProvider<EmployeeModel?>((ref) {
     return ref.watch(firebaseAuthProvider).authStateChanges().map(
         (User? user) => (user != null) ? EmployeeModel(uid: user.uid) : null);
   } catch (e) {
-    print("userStream: ${e.toString()}");
+    print("userStreamProvider: ${e.toString()}");
     return const Stream.empty();
   }
 });

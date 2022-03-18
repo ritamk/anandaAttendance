@@ -1,4 +1,5 @@
 import 'package:face_rec/services/database.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/providers.dart';
 import 'package:face_rec/shared/snackbar.dart';
@@ -80,7 +81,7 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
                                     builder: (context) => HomePage(uid: user),
                                   ),
                                   (route) => false);
-                              DatabaseService(uid: user).verified(true);
+                              UserSharedPref.setVerifiedOrNot(true);
                             } else {
                               setState(() {
                                 loading = false;
@@ -90,7 +91,7 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
                                         : "Something went wrong, please try again\nRe-check your credentials",
                                     context);
                               });
-                              DatabaseService(uid: user).verified(false);
+                              UserSharedPref.setVerifiedOrNot(false);
                             }
                           }
                         });
@@ -104,5 +105,11 @@ class _EidConfirmDialogState extends State<EidConfirmDialog> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _eidNode.dispose();
+    super.dispose();
   }
 }

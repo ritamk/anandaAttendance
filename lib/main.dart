@@ -1,3 +1,4 @@
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await UserSharedPref.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
