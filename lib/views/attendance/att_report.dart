@@ -53,68 +53,73 @@ class AttReportStatePage extends State<AttReportPage> {
                     .attendanceSummary(selectedDate),
                 initialData: null,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data!.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          // check if the date is marked as leave
-                          try {
-                            return !snapshot.data![index]["leave"]
-                                ? ListTile(
-                                    title: Text(
-                                        DateFormat.jms()
-                                            .format(snapshot.data![index]
-                                                    ["time"]
-                                                .toDate())
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold)),
-                                    leading: snapshot.data![index]["reporting"]
-                                        ? Icon(Icons.login_rounded,
-                                            color: Colors.green.shade800)
-                                        : Icon(Icons.logout_rounded,
-                                            color: Colors.red.shade800),
-                                  )
-                                : const ListTile(
-                                    title: Text("On leave."),
-                                    leading: Icon(Icons.check));
-                          } catch (e) {
-                            return ListTile(
-                              title: Text(
-                                  DateFormat.jms()
-                                      .format(snapshot.data![index]["time"]
-                                          .toDate())
-                                      .toString(),
-                                  style: const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold)),
-                              leading: snapshot.data![index]["reporting"]
-                                  ? Icon(Icons.login_rounded,
-                                      color: Colors.green.shade800)
-                                  : Icon(Icons.logout_rounded,
-                                      color: Colors.red.shade800),
-                            );
-                          }
-                        },
-                        padding: const EdgeInsets.all(16.0),
-                        shrinkWrap: true,
-                        clipBehavior: Clip.none,
-                      );
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // check if the date is marked as leave
+                            try {
+                              return !snapshot.data![index]["leave"]
+                                  ? ListTile(
+                                      title: Text(
+                                          DateFormat.jms()
+                                              .format(snapshot.data![index]
+                                                      ["time"]
+                                                  .toDate())
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold)),
+                                      leading: snapshot.data![index]
+                                              ["reporting"]
+                                          ? Icon(Icons.login_rounded,
+                                              color: Colors.green.shade800)
+                                          : Icon(Icons.logout_rounded,
+                                              color: Colors.red.shade800),
+                                    )
+                                  : const ListTile(
+                                      title: Text("On leave."),
+                                      leading: Icon(Icons.check));
+                            } catch (e) {
+                              return ListTile(
+                                title: Text(
+                                    DateFormat.jms()
+                                        .format(snapshot.data![index]["time"]
+                                            .toDate())
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold)),
+                                leading: snapshot.data![index]["reporting"]
+                                    ? Icon(Icons.login_rounded,
+                                        color: Colors.green.shade800)
+                                    : Icon(Icons.logout_rounded,
+                                        color: Colors.red.shade800),
+                              );
+                            }
+                          },
+                          padding: const EdgeInsets.all(16.0),
+                          shrinkWrap: true,
+                          clipBehavior: Clip.none,
+                        );
+                      } else {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const <Widget>[
+                            Icon(Icons.error, color: Colors.red),
+                            SizedBox(height: 0.0, width: 10.0),
+                            Text(
+                              "No data for the selected date",
+                              style: TextStyle(
+                                  fontSize: 16.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        );
+                      }
                     } else {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          Icon(Icons.error, color: Colors.red),
-                          SizedBox(height: 0.0, width: 10.0),
-                          Text(
-                            "No data for the selected date",
-                            style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      );
+                      return const Loading(white: false);
                     }
                   } else {
                     return const Loading(white: false);
