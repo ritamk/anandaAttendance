@@ -26,7 +26,7 @@ class AuthPage extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.all(4.0),
                   child: Text(
-                    "Sign up",
+                    "Register",
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),
@@ -38,7 +38,7 @@ class AuthPage extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.all(4.0),
                   child: Text(
-                    "Sign in",
+                    "Log-in",
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),
