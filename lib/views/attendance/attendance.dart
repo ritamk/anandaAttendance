@@ -27,6 +27,7 @@ class _AttendancePageState extends State<AttendancePage> {
   GeoPoint? geoPointCoord;
   GeoPoint? desiredCoord;
   final double coordVar = 0.0005;
+  late bool biometricsAv;
 
   @override
   Widget build(BuildContext context) {

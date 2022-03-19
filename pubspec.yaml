@@ -42,6 +42,7 @@ dependencies:
   flutter_riverpod: ^1.0.3
   geolocator: ^8.2.0
   shared_preferences: ^2.0.13
+  local_auth: ^1.1.11
   # tflite_flutter: ^0.9.0
 
 dev_dependencies:
