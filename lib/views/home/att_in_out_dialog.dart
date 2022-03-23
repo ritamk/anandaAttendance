@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:face_rec/models/attendance_model.dart';
-import 'package:face_rec/services/database.dart';
+import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/views/attendance/attendance.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,41 +34,47 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
       title: const Text("Verify geolocation"),
       content: Column(
         children: <Widget>[
-          MaterialButton(
-            child:
-                const Icon(Icons.location_on, size: 24.0, color: Colors.blue),
-            onPressed: () async {
-              setState(() => loading = true);
-              try {
-                coord = await _determinePosition();
-                geoPointCoord = GeoPoint(coord!.latitude, coord!.longitude);
-                desiredCoord = widget.loc;
-                if ((geoPointCoord!.latitude - desiredCoord!.latitude).abs() <
-                        coordVar &&
-                    (geoPointCoord!.longitude - desiredCoord!.longitude).abs() <
-                        coordVar) {
-                  setState(() {
-                    loading = false;
-                    commonSnackbar(
-                        "Geolocation verification successful.", context);
-                    verified = true;
-                  });
-                } else {
-                  setState(() {
-                    loading = false;
-                    commonSnackbar("Geolocation verification failed.", context);
-                  });
-                }
-              } catch (e) {
-                setState(() {
-                  loading = false;
-                  commonSnackbar(e.toString(), context);
-                });
-              }
-            },
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-          ),
+          !loading
+              ? MaterialButton(
+                  child: const Icon(Icons.location_on,
+                      size: 24.0, color: Colors.blue),
+                  onPressed: () async {
+                    setState(() => loading = true);
+                    try {
+                      coord = await _determinePosition();
+                      geoPointCoord =
+                          GeoPoint(coord!.latitude, coord!.longitude);
+                      desiredCoord = widget.loc;
+                      if ((geoPointCoord!.latitude - desiredCoord!.latitude)
+                                  .abs() <
+                              coordVar &&
+                          (geoPointCoord!.longitude - desiredCoord!.longitude)
+                                  .abs() <
+                              coordVar) {
+                        setState(() {
+                          loading = false;
+                          commonSnackbar(
+                              "Geolocation verification successful.", context);
+                          verified = true;
+                        });
+                      } else {
+                        setState(() {
+                          loading = false;
+                          commonSnackbar(
+                              "Geolocation verification failed.", context);
+                        });
+                      }
+                    } catch (e) {
+                      setState(() {
+                        loading = false;
+                        commonSnackbar(e.toString(), context);
+                      });
+                    }
+                  },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                )
+              : const Loading(white: false),
           const Text("Are you entering (In) or leaving (Out) the location?"),
         ],
       ),

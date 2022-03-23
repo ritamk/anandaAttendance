@@ -1,7 +1,6 @@
 import 'package:face_rec/services/database.dart';
 import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/loading/loading.dart';
-import 'package:face_rec/shared/providers.dart';
 import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/shared/text_field/auth_text_field.dart';
 import 'package:face_rec/views/home/home.dart';
