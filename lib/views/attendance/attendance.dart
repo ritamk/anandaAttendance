@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:face_rec/main.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -20,21 +21,33 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePageState extends State<AttendancePage> {
   bool loading = true;
-  List<CameraDescription> cameras = <CameraDescription>[];
+  late CameraDescription frontCam;
   late CameraController controller;
 
   @override
   void initState() {
     super.initState();
-    avlCameras();
-  }
-
-  void avlCameras() {
-    availableCameras().then((value) {
-      cameras = value;
-      controller = CameraController(cameras[0], ResolutionPreset.max);
-      controller.initialize();
-    }).whenComplete(() => setState(() => loading = false));
+    frontCam = cameras.firstWhere(
+        (element) => element.lensDirection == CameraLensDirection.front);
+    try {
+      controller = CameraController(frontCam, ResolutionPreset.max);
+    } catch (e) {
+      print("camController: ${e.toString()}");
+      controller = CameraController(frontCam, ResolutionPreset.max);
+    }
+    try {
+      controller.initialize().then((value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() => loading = false);
+      });
+    } catch (e) {
+      print("camControllerInit: ${e.toString()}");
+      controller
+          .initialize()
+          .then((value) => setState((() => loading = false)));
+    }
   }
 
   @override
@@ -50,11 +63,27 @@ class _AttendancePageState extends State<AttendancePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: !loading
-              ? CameraPreview(controller)
-              : const Loading(white: false),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+            child: cameraLoadedWidget(),
+          ),
         ),
       ),
     );
+  }
+
+  Widget cameraLoadedWidget() {
+    if (!loading) {
+      try {
+        return CameraPreview(controller);
+      } catch (e) {
+        print("cameraLoading: ${e.toString()}");
+        return CameraPreview(controller);
+      }
+    } else {
+      return const Loading(white: false);
+    }
   }
 }
