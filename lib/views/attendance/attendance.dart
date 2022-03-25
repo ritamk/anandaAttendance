@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:face_rec/shared/loading/loading.dart';
 import 'package:flutter/material.dart';
 
 class AttendancePage extends StatefulWidget {
@@ -18,20 +19,22 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  bool loading = false;
-  late List<CameraDescription> cameras;
+  bool loading = true;
+  List<CameraDescription> cameras = <CameraDescription>[];
   late CameraController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = CameraController(cameras[0], ResolutionPreset.max);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
+    avlCameras();
+  }
+
+  void avlCameras() {
+    availableCameras().then((value) {
+      cameras = value;
+      controller = CameraController(cameras[0], ResolutionPreset.max);
+      controller.initialize();
+    }).whenComplete(() => setState(() => loading = false));
   }
 
   @override
@@ -47,9 +50,9 @@ class _AttendancePageState extends State<AttendancePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: <Widget>[CameraPreview(controller)],
-          ),
+          child: !loading
+              ? CameraPreview(controller)
+              : const Loading(white: false),
         ),
       ),
     );
