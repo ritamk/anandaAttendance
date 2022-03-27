@@ -1,6 +1,4 @@
 PODS:
-  - camera (0.0.1):
-    - Flutter
   - cloud_firestore (3.1.10):
     - Firebase/Firestore (= 8.11.0)
     - firebase_core
@@ -72,18 +70,11 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - path_provider_ios (0.0.1):
-    - Flutter
-  - permission_handler_apple (9.0.2):
-    - Flutter
   - PromisesObjC (2.0.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - tflite_flutter (0.1.0):
-    - Flutter
 
 DEPENDENCIES:
-  - camera (from `.symlinks/plugins/camera/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -91,10 +82,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
-  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
-  - tflite_flutter (from `.symlinks/plugins/tflite_flutter/ios`)
 
 SPEC REPOS:
   trunk:
@@ -109,8 +97,6 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  camera:
-    :path: ".symlinks/plugins/camera/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_auth:
@@ -126,14 +112,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   local_auth:
     :path: ".symlinks/plugins/local_auth/ios"
-  path_provider_ios:
-    :path: ".symlinks/plugins/path_provider_ios/ios"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
-  tflite_flutter:
-    :path: ".symlinks/plugins/tflite_flutter/ios"
 
 CHECKOUT OPTIONS:
   FirebaseFirestore:
@@ -141,7 +121,6 @@ CHECKOUT OPTIONS:
     :tag: 8.11.0
 
 SPEC CHECKSUMS:
-  camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
   cloud_firestore: c6c42fe62809b7417aa3c45a6ef0c2812f7fb0d6
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
   firebase_auth: 99c9cdc8cc2e59f6fd4960b6e183f5430d237838
@@ -157,12 +136,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   local_auth: 1740f55d7af0a2e2a8684ce225fe79d8931e808c
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
-  permission_handler_apple: d21b38e1a4b2e041c63af9568f9165e114e507a6
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  tflite_flutter: 9157a660578930a99728974f247369af1c3595d5
 
-PODFILE CHECKSUM: 4f942d08a6dd68731815c719ac834e2a11dde677
+PODFILE CHECKSUM: 2e4fb2411a3a60f25a025a071c46174c7b614daa
 
 COCOAPODS: 1.11.2

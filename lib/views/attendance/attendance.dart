@@ -88,10 +88,10 @@ class _AttendancePageState extends State<AttendancePage> {
                                   geoloc: widget.loc,
                                 ),
                               )
-                              .then((value) => commonSnackbar(
-                                  value
-                                      ? "Attendance marked successfully"
-                                      : "Failed to mark attendance, try again",
+                              .whenComplete(() => commonSnackbar(
+                                  "Attendance marked successfully", context))
+                              .onError((error, stackTrace) => commonSnackbar(
+                                  "Failed to mark attendance, please try again",
                                   context));
                         } else {
                           commonSnackbar(
@@ -108,7 +108,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     setState(() {
                       loading = false;
                     });
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
