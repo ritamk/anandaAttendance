@@ -70,48 +70,7 @@ class _AttendancePageState extends State<AttendancePage> {
           child: !loading
               ? !attendanceDone
                   ? MaterialButton(
-                      onPressed: () async {
-                        setState(() {
-                          loading = true;
-                        });
-                        try {
-                          await localAuth
-                              .authenticate(
-                            localizedReason:
-                                "Verify biometrics to mark attendance",
-                            biometricOnly: true,
-                          )
-                              .then((value) {
-                            if (value) {
-                              DatabaseService(uid: widget.uid)
-                                  .attendanceReporting(
-                                EmpAttendanceModel(
-                                  reporting: widget.reporting,
-                                  time: Timestamp.now(),
-                                  geoloc: widget.loc,
-                                ),
-                              )
-                                  .whenComplete(() {
-                                setState(() => attendanceDone = true);
-                                commonSnackbar(
-                                    "Attendance marked successfully", context);
-                              }).onError((error, stackTrace) => commonSnackbar(
-                                      "Failed to mark attendance, please try again",
-                                      context));
-                            } else {
-                              commonSnackbar(
-                                  "Biometric verification failed", context);
-                            }
-                          });
-                        } on PlatformException catch (e) {
-                          print("biometricFailed: ${e.toString()}");
-                          commonSnackbar(
-                              "Something went wrong, please try again\n"
-                              "Error: ${e.toString()}",
-                              context);
-                        }
-                        setState(() => loading = false);
-                      },
+                      onPressed: onAuthPressed,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -174,5 +133,46 @@ class _AttendancePageState extends State<AttendancePage> {
         ),
       ),
     );
+  }
+
+  Future onAuthPressed() async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      await localAuth
+          .authenticate(
+        localizedReason: "Verify biometrics to mark attendance",
+        biometricOnly: true,
+      )
+          .then((value) {
+        if (value) {
+          DatabaseService(uid: widget.uid)
+              .attendanceReporting(
+            EmpAttendanceModel(
+              reporting: widget.reporting,
+              time: Timestamp.now(),
+              geoloc: widget.loc,
+            ),
+          )
+              .whenComplete(() {
+            setState(() {
+              loading = false;
+              attendanceDone = true;
+            });
+            commonSnackbar("Attendance marked successfully", context);
+          }).onError((error, stackTrace) => commonSnackbar(
+                  "Failed to mark attendance, please try again", context));
+        } else {
+          commonSnackbar("Biometric verification failed", context);
+        }
+      });
+    } on PlatformException catch (e) {
+      print("biometricFailed: ${e.toString()}");
+      commonSnackbar(
+          "Something went wrong, please try again\n"
+          "Error: ${e.toString()}",
+          context);
+    }
   }
 }
