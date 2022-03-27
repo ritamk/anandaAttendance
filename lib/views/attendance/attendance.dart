@@ -26,6 +26,7 @@ class _AttendancePageState extends State<AttendancePage> {
   bool loading = true;
   final LocalAuthentication localAuth = LocalAuthentication();
   bool? canCheckBiometric;
+  bool attendanceDone = false;
 
   @override
   void initState() {
@@ -67,86 +68,105 @@ class _AttendancePageState extends State<AttendancePage> {
       body: Center(
         child: SingleChildScrollView(
           child: !loading
-              ? MaterialButton(
-                  onPressed: () async {
-                    setState(() {
-                      loading = true;
-                    });
-                    try {
-                      await localAuth
-                          .authenticate(
-                        localizedReason: "Verify biometrics to mark attendance",
-                        biometricOnly: true,
-                      )
-                          .then((value) {
-                        if (value) {
-                          DatabaseService(uid: widget.uid)
-                              .attendanceReporting(
+              ? !attendanceDone
+                  ? MaterialButton(
+                      onPressed: () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        try {
+                          await localAuth
+                              .authenticate(
+                            localizedReason:
+                                "Verify biometrics to mark attendance",
+                            biometricOnly: true,
+                          )
+                              .then((value) {
+                            if (value) {
+                              DatabaseService(uid: widget.uid)
+                                  .attendanceReporting(
                                 EmpAttendanceModel(
                                   reporting: widget.reporting,
                                   time: Timestamp.now(),
                                   geoloc: widget.loc,
                                 ),
                               )
-                              .whenComplete(() => commonSnackbar(
-                                  "Attendance marked successfully", context))
-                              .onError((error, stackTrace) => commonSnackbar(
-                                  "Failed to mark attendance, please try again",
-                                  context));
-                        } else {
+                                  .whenComplete(() {
+                                setState(() => attendanceDone = true);
+                                commonSnackbar(
+                                    "Attendance marked successfully", context);
+                              }).onError((error, stackTrace) => commonSnackbar(
+                                      "Failed to mark attendance, please try again",
+                                      context));
+                            } else {
+                              commonSnackbar(
+                                  "Biometric verification failed", context);
+                            }
+                          });
+                        } on PlatformException catch (e) {
+                          print("biometricFailed: ${e.toString()}");
                           commonSnackbar(
-                              "Biometric verification failed", context);
+                              "Something went wrong, please try again\n"
+                              "Error: ${e.toString()}",
+                              context);
                         }
-                      });
-                    } on PlatformException catch (e) {
-                      print("biometricFailed: ${e.toString()}");
-                      commonSnackbar(
-                          "Something went wrong, please try again\n"
-                          "Error: ${e.toString()}",
-                          context);
-                    }
-                    setState(() {
-                      loading = false;
-                    });
-                    // Navigator.of(context).pop();
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        setState(() => loading = false);
+                      },
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const <Widget>[
-                          Icon(
-                            Icons.fingerprint_outlined,
-                            color: Colors.blue,
-                            size: 32.0,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: const <Widget>[
+                              Icon(
+                                Icons.fingerprint_outlined,
+                                color: Colors.blue,
+                                size: 32.0,
+                              ),
+                              Text(
+                                " / ",
+                                style: TextStyle(
+                                  fontSize: 22.0,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              Icon(
+                                Icons.face,
+                                color: Colors.blue,
+                                size: 32.0,
+                              ),
+                            ],
                           ),
-                          Text(
-                            " / ",
+                          const SizedBox(height: 20.0, width: 0.0),
+                          const Text(
+                            "Verify biometrics",
                             style: TextStyle(
-                              fontSize: 22.0,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          Icon(
-                            Icons.face,
-                            color: Colors.blue,
-                            size: 32.0,
+                                fontSize: 15.0,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20.0, width: 0.0),
-                      const Text(
-                        "Verify biometrics",
-                        style: TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                )
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.green.shade500,
+                          size: 32.0,
+                        ),
+                        const SizedBox(height: 20.0, width: 0.0),
+                        Text(
+                          "Attendance marked",
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.green.shade500,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    )
               : const Loading(white: false),
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
