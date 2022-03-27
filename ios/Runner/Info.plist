@@ -43,12 +43,12 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location is required to determine if you're in the store.</string>
-	<key>NSCameraUsageDescription</key>
+	<!-- <key>NSCameraUsageDescription</key>
 	<string>Camera is required for face authentication</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone is required for authentication</string>
+	<string>Microphone is required for authentication</string> -->
 	<key>NSFaceIDUsageDescription</key>
-	<string>Face ID required for biometric authentication</string>
+	<string>Face ID/Touch ID required for biometric authentication</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

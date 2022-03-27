@@ -1,17 +1,17 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-List<CameraDescription> cameras = <CameraDescription>[];
+// List<CameraDescription> cameras = <CameraDescription>[];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await UserSharedPref.init();
-  cameras = await availableCameras();
+  // cameras = await availableCameras();
   runApp(const ProviderScope(child: MyApp()));
 }
 

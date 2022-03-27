@@ -110,7 +110,11 @@ class HomePage extends StatelessWidget {
               clipBehavior: Clip.none,
             );
           } else {
-            return const Center(child: Loading(white: false));
+            return const Center(
+                child: Loading(
+              white: false,
+              rad: 14.0,
+            ));
           }
         },
       ),

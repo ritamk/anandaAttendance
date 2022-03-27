@@ -1,8 +1,13 @@
-import 'package:camera/camera.dart';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:face_rec/main.dart';
+import 'package:face_rec/models/attendance_model.dart';
+import 'package:face_rec/services/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 
 class AttendancePage extends StatefulWidget {
   const AttendancePage({
@@ -21,69 +26,135 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePageState extends State<AttendancePage> {
   bool loading = true;
-  late CameraDescription frontCam;
-  late CameraController controller;
+  final LocalAuthentication localAuth = LocalAuthentication();
+  bool? canCheckBiometric;
 
   @override
   void initState() {
     super.initState();
-    frontCam = cameras.firstWhere(
-        (element) => element.lensDirection == CameraLensDirection.front);
-    try {
-      controller = CameraController(frontCam, ResolutionPreset.max);
-    } catch (e) {
-      print("camController: ${e.toString()}");
-      controller = CameraController(frontCam, ResolutionPreset.max);
-    }
-    try {
-      controller.initialize().then((value) {
-        if (!mounted) {
-          return;
-        }
-        setState(() => loading = false);
-      });
-    } catch (e) {
-      print("camControllerInit: ${e.toString()}");
-      controller
-          .initialize()
-          .then((value) => setState((() => loading = false)));
+    checkBiom();
+    if (!mounted) {
+      return;
     }
   }
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
+  }
+
+  Future checkBiom() async {
+    try {
+      canCheckBiometric = await localAuth.canCheckBiometrics.then((value) {
+        setState(() {
+          loading = false;
+          value
+              ? null
+              : commonSnackbar(
+                  "Required biometric services unavailable on device", context);
+        });
+        return;
+      });
+    } catch (e) {
+      print("checkBiom: ${e.toString()}");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Face Recognition")),
+      appBar: AppBar(
+        title: const Text("Mark Attendance"),
+      ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25.0),
-            ),
-            child: cameraLoadedWidget(),
-          ),
+        child: SingleChildScrollView(
+          child: !loading
+              ? MaterialButton(
+                  onPressed: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                    try {
+                      await localAuth
+                          .authenticate(
+                        localizedReason: "Verify biometrics to mark attendance",
+                        biometricOnly: true,
+                      )
+                          .then((value) {
+                        if (value) {
+                          DatabaseService(uid: widget.uid)
+                              .attendanceReporting(
+                                EmpAttendanceModel(
+                                  reporting: widget.reporting,
+                                  time: Timestamp.now(),
+                                  geoloc: widget.loc,
+                                ),
+                              )
+                              .then((value) => commonSnackbar(
+                                  value
+                                      ? "Attendance marked successfully"
+                                      : "Failed to mark attendance, try again",
+                                  context));
+                        } else {
+                          commonSnackbar(
+                              "Biometric verification failed", context);
+                        }
+                      });
+                    } on PlatformException catch (e) {
+                      print("biometricFailed: ${e.toString()}");
+                      commonSnackbar(
+                          "Something went wrong, please try again\n"
+                          "Error: ${e.toString()}",
+                          context);
+                    }
+                    setState(() {
+                      loading = false;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: const <Widget>[
+                          Icon(
+                            Icons.fingerprint_outlined,
+                            color: Colors.blue,
+                            size: 32.0,
+                          ),
+                          Text(
+                            " / ",
+                            style: TextStyle(
+                              fontSize: 22.0,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          Icon(
+                            Icons.face,
+                            color: Colors.blue,
+                            size: 32.0,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0, width: 0.0),
+                      const Text(
+                        "Verify biometrics",
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                )
+              : const Loading(white: false),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          clipBehavior: Clip.none,
         ),
       ),
     );
-  }
-
-  Widget cameraLoadedWidget() {
-    if (!loading) {
-      try {
-        return CameraPreview(controller);
-      } catch (e) {
-        print("cameraLoading: ${e.toString()}");
-        return CameraPreview(controller);
-      }
-    } else {
-      return const Loading(white: false);
-    }
   }
 }

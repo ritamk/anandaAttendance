@@ -25,7 +25,7 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
   Position? coord;
   GeoPoint? geoPointCoord;
   GeoPoint? desiredCoord;
-  final double coordVar = 0.0005;
+  final double coordDiff = 0.001;
   bool verified = false;
 
   @override
@@ -47,10 +47,10 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
                       desiredCoord = widget.loc;
                       if ((geoPointCoord!.latitude - desiredCoord!.latitude)
                                   .abs() <
-                              coordVar &&
+                              coordDiff &&
                           (geoPointCoord!.longitude - desiredCoord!.longitude)
                                   .abs() <
-                              coordVar) {
+                              coordDiff) {
                         setState(() {
                           loading = false;
                           commonSnackbar(
@@ -74,7 +74,10 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                 )
-              : const Loading(white: false),
+              : const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Loading(white: false),
+                ),
           const Text("Are you entering (In) or leaving (Out) the location?"),
         ],
       ),
@@ -128,7 +131,7 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
 
     try {
       return await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+          desiredAccuracy: LocationAccuracy.best);
     } catch (e) {
       return Geolocator.getLastKnownPosition();
     }
