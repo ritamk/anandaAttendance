@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Face Recognition',
-      debugShowCheckedModeBanner: false,
+      // debugShowCheckedModeBanner: false,
       theme: mainTheme(),
       // home: Consumer(
       //     builder: (_, ref, __) => ref.watch(dashboardOrNotProvider)
