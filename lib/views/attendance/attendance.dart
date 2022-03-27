@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:face_rec/models/attendance_model.dart';
 import 'package:face_rec/services/database.dart';
