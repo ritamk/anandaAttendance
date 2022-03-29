@@ -4,7 +4,6 @@ import 'package:face_rec/services/database.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 class AttendancePage extends StatefulWidget {
