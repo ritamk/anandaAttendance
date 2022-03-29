@@ -112,14 +112,12 @@ class _AttendancePageState extends State<AttendancePage> {
                   "Failed to mark attendance, please try again", context));
         } else {
           commonSnackbar("Biometric verification failed", context);
+          Navigator.of(context).pop();
         }
       });
-    } on PlatformException catch (e) {
-      print("biometricFailed: ${e.toString()}");
-      commonSnackbar(
-          "Something went wrong, please try again\n"
-          "Error: ${e.toString()}",
-          context);
+    } catch (e) {
+      commonSnackbar("Something went wrong, please try again\n", context);
+      Navigator.of(context).pop();
     }
   }
 
