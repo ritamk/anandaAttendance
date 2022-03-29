@@ -22,7 +22,6 @@ class AttendanceInOrOutDialog extends StatefulWidget {
 }
 
 class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
-  bool loadedInOrOut = false;
   bool? enteredLast;
   bool loading = false;
   Position? coord;
@@ -34,10 +33,6 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
   @override
   void initState() {
     super.initState();
-    loadEntered();
-  }
-
-  Future loadEntered() async {
     enteredLast = UserSharedPref.getEnterCheck();
   }
 
@@ -45,63 +40,56 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
       title: const Text("Verify geolocation"),
-      content: loadedInOrOut
-          ? Column(
-              children: <Widget>[
-                const Text("Tap the below icon to verify geolocation"),
-                !loading
-                    ? MaterialButton(
-                        child: const Icon(Icons.location_on,
-                            size: 24.0, color: Colors.blue),
-                        onPressed: () async {
-                          setState(() => loading = true);
-                          try {
-                            coord = await _determinePosition();
-                            geoPointCoord =
-                                GeoPoint(coord!.latitude, coord!.longitude);
-                            desiredCoord = widget.loc;
-                            if ((geoPointCoord!.latitude -
-                                            desiredCoord!.latitude)
-                                        .abs() <
-                                    coordDiff &&
-                                (geoPointCoord!.longitude -
-                                            desiredCoord!.longitude)
-                                        .abs() <
-                                    coordDiff) {
-                              setState(() {
-                                loading = false;
-                                commonSnackbar(
-                                    "Geolocation verification successful.",
-                                    context);
-                                verified = true;
-                              });
-                            } else {
-                              setState(() {
-                                loading = false;
-                                commonSnackbar(
-                                    "Geolocation verification failed.",
-                                    context);
-                              });
-                            }
-                          } catch (e) {
-                            setState(() {
-                              loading = false;
-                              commonSnackbar(e.toString(), context);
-                            });
-                          }
-                        },
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                      )
-                    : const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Loading(white: false),
-                      ),
-                const Text(
-                    "Are you entering (In) or leaving (Out) the location?"),
-              ],
-            )
-          : const Loading(white: false),
+      content: Column(
+        children: <Widget>[
+          const Text("Tap the below icon to verify geolocation"),
+          !loading
+              ? MaterialButton(
+                  child: const Icon(Icons.location_on,
+                      size: 24.0, color: Colors.blue),
+                  onPressed: () async {
+                    setState(() => loading = true);
+                    try {
+                      coord = await _determinePosition();
+                      geoPointCoord =
+                          GeoPoint(coord!.latitude, coord!.longitude);
+                      desiredCoord = widget.loc;
+                      if ((geoPointCoord!.latitude - desiredCoord!.latitude)
+                                  .abs() <
+                              coordDiff &&
+                          (geoPointCoord!.longitude - desiredCoord!.longitude)
+                                  .abs() <
+                              coordDiff) {
+                        setState(() {
+                          loading = false;
+                          commonSnackbar(
+                              "Geolocation verification successful.", context);
+                          verified = true;
+                        });
+                      } else {
+                        setState(() {
+                          loading = false;
+                          commonSnackbar(
+                              "Geolocation verification failed.", context);
+                        });
+                      }
+                    } catch (e) {
+                      setState(() {
+                        loading = false;
+                        commonSnackbar(e.toString(), context);
+                      });
+                    }
+                  },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                )
+              : const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Loading(white: false),
+                ),
+          const Text("Are you entering (In) or leaving (Out) the location?"),
+        ],
+      ),
       actions: <Widget>[
         CupertinoDialogAction(
           textStyle: const TextStyle(color: Colors.blue, fontSize: 16.0),
