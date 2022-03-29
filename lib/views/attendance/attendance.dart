@@ -82,9 +82,7 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   Future onAuthPressed() async {
-    setState(() {
-      loading = true;
-    });
+    setState(() => loading = true);
     try {
       await localAuth
           .authenticate(

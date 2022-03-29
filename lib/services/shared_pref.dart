@@ -4,6 +4,7 @@ class UserSharedPref {
   static SharedPreferences? sharedPreferences;
   static const _verifiedKey = "verified";
   static const _userKey = "uid";
+  static const _enterCheck = "enterCheck";
 
   static Future init() async =>
       sharedPreferences = await SharedPreferences.getInstance();
@@ -15,7 +16,7 @@ class UserSharedPref {
     try {
       return sharedPreferences!.getBool(_verifiedKey);
     } catch (e) {
-      return null;
+      return false;
     }
   }
 
@@ -31,6 +32,18 @@ class UserSharedPref {
               ? null
               : user
           : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future setEnterCheck({bool enteredLast = false}) async {
+    return await sharedPreferences!.setBool(_enterCheck, enteredLast);
+  }
+
+  static bool? getEnterCheck() {
+    try {
+      return sharedPreferences!.getBool(_enterCheck);
     } catch (e) {
       return null;
     }
