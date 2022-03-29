@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:face_rec/models/attendance_model.dart';
 import 'package:face_rec/services/database.dart';
+import 'package:face_rec/services/shared_pref.dart';
 import 'package:face_rec/shared/loading/loading.dart';
 import 'package:face_rec/shared/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -93,19 +94,22 @@ class _AttendancePageState extends State<AttendancePage> {
         if (value) {
           DatabaseService(uid: widget.uid)
               .attendanceReporting(
-            EmpAttendanceModel(
-              reporting: widget.reporting,
-              time: Timestamp.now(),
-              geoloc: widget.loc,
-            ),
-          )
+                EmpAttendanceModel(
+                  reporting: widget.reporting,
+                  time: Timestamp.now(),
+                  geoloc: widget.loc,
+                ),
+              )
               .whenComplete(() {
-            setState(() {
-              loading = false;
-              attendanceDone = true;
-            });
-            commonSnackbar("Attendance marked successfully", context);
-          }).onError((error, stackTrace) => commonSnackbar(
+                UserSharedPref.setEnterCheck(enteredLast: widget.reporting);
+                setState(() {
+                  loading = false;
+                  attendanceDone = true;
+                });
+                commonSnackbar("Attendance marked successfully", context);
+              })
+              .timeout(const Duration(seconds: 10))
+              .onError((error, stackTrace) => commonSnackbar(
                   "Failed to mark attendance, please try again", context));
         } else {
           commonSnackbar("Biometric verification failed", context);
