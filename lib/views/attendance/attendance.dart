@@ -27,6 +27,7 @@ class _AttendancePageState extends State<AttendancePage> {
   final LocalAuthentication localAuth = LocalAuthentication();
   bool? canCheckBiometric;
   bool attendanceDone = false;
+  bool biomAvailable = true;
 
   @override
   void initState() {
@@ -47,10 +48,15 @@ class _AttendancePageState extends State<AttendancePage> {
       canCheckBiometric = await localAuth.canCheckBiometrics.then((value) {
         setState(() {
           loading = false;
-          value
-              ? null
-              : commonSnackbar(
-                  "Required biometric services unavailable on device", context);
+          if (value) {
+            null;
+          } else {
+            commonSnackbar(
+                "Required biometric services unavailable on device", context);
+            setState(() {
+              biomAvailable = false;
+            });
+          }
         });
         return;
       });
@@ -68,60 +74,79 @@ class _AttendancePageState extends State<AttendancePage> {
       body: Center(
         child: SingleChildScrollView(
           child: !loading
-              ? !attendanceDone
-                  ? MaterialButton(
-                      onPressed: onAuthPressed,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+              ? biomAvailable
+                  ? !attendanceDone
+                      ? MaterialButton(
+                          onPressed: onAuthPressed,
+                          child: Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: const <Widget>[
-                              Icon(
-                                Icons.fingerprint_outlined,
-                                color: Colors.blue,
-                                size: 32.0,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: const <Widget>[
+                                  Icon(
+                                    Icons.fingerprint_outlined,
+                                    color: Colors.blue,
+                                    size: 32.0,
+                                  ),
+                                  Text(
+                                    " / ",
+                                    style: TextStyle(
+                                      fontSize: 22.0,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.face,
+                                    color: Colors.blue,
+                                    size: 32.0,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                " / ",
+                              const SizedBox(height: 20.0, width: 0.0),
+                              const Text(
+                                "Verify biometrics",
                                 style: TextStyle(
-                                  fontSize: 22.0,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              Icon(
-                                Icons.face,
-                                color: Colors.blue,
-                                size: 32.0,
+                                    fontSize: 15.0,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20.0, width: 0.0),
-                          const Text(
-                            "Verify biometrics",
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    )
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.green.shade500,
+                              size: 32.0,
+                            ),
+                            const SizedBox(height: 20.0, width: 0.0),
+                            Text(
+                              "Attendance marked",
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.green.shade500,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
                   : Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Icon(
-                          Icons.check_circle,
-                          color: Colors.green.shade500,
+                          Icons.error,
+                          color: Colors.red.shade700,
                           size: 32.0,
                         ),
                         const SizedBox(height: 20.0, width: 0.0),
                         Text(
-                          "Attendance marked",
+                          "Biometric authentication unavailable",
                           style: TextStyle(
                               fontSize: 15.0,
-                              color: Colors.green.shade500,
+                              color: Colors.red.shade700,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
