@@ -33,7 +33,7 @@ class _AttendanceInOrOutDialogState extends State<AttendanceInOrOutDialog> {
   @override
   void initState() {
     super.initState();
-    enteredLast = UserSharedPref.getEnterCheck();
+    enteredLast = UserSharedPref.getEnterCheck(time: Timestamp.now());
   }
 
   @override

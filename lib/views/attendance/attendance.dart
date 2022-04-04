@@ -101,7 +101,8 @@ class _AttendancePageState extends State<AttendancePage> {
                 ),
               )
               .whenComplete(() {
-                UserSharedPref.setEnterCheck(enteredLast: widget.reporting);
+                UserSharedPref.setEnterCheck(
+                    enteredLast: widget.reporting, time: Timestamp.now());
                 setState(() {
                   loading = false;
                   attendanceDone = true;
