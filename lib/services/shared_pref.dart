@@ -49,13 +49,15 @@ class UserSharedPref {
   static bool? getEnterCheck({Timestamp? time}) {
     try {
       final list = sharedPreferences!.getStringList(_enterCheck);
-      list![0].contains("true") &&
-              time!.toDate().toString().substring(0, 10).trim() == list[1]
-          ? true
-          : list[0].contains("false") &&
-                  time!.toDate().toString().substring(0, 10).trim() == list[1]
-              ? false
-              : null;
+      if (list![0].contains("true") &&
+          time!.toDate().toString().substring(0, 10).trim() == list[1]) {
+        return true;
+      } else if (list[0].contains("false") &&
+          time!.toDate().toString().substring(0, 10).trim() == list[1]) {
+        return false;
+      } else {
+        return null;
+      }
     } catch (e) {
       return null;
     }
