@@ -206,7 +206,7 @@ class _AttendancePageState extends State<AttendancePage> {
         );
       }
     } else {
-      return const Loading(white: false);
+      return const Loading(white: false, rad: 14.0);
     }
   }
 }

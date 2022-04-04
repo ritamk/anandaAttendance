@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSharedPref {
@@ -37,13 +38,21 @@ class UserSharedPref {
     }
   }
 
-  static Future setEnterCheck({bool enteredLast = false}) async {
-    return await sharedPreferences!.setBool(_enterCheck, enteredLast);
+  static Future setEnterCheck(
+      {bool enteredLast = false, Timestamp? time}) async {
+    return await sharedPreferences!.setStringList(_enterCheck, [
+      enteredLast.toString(),
+      time!.toDate().toString().substring(0, 10).trim()
+    ]);
   }
 
-  static bool? getEnterCheck() {
+  static bool? getEnterCheck({Timestamp? time}) {
     try {
-      return sharedPreferences!.getBool(_enterCheck);
+      final list = sharedPreferences!.getStringList(_enterCheck);
+      list![0].contains("true") &&
+              time!.toDate().toString().substring(0, 10).trim() == list[1]
+          ? true
+          : false;
     } catch (e) {
       return null;
     }

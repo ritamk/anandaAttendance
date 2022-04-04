@@ -61,6 +61,18 @@ class DatabaseService {
     }
   }
 
+  Future<bool> updateGeoLocation(double lat, double lon) async {
+    try {
+      await _employeeCollection.doc(uid).update({
+        "loc": GeoPoint(lat, lon),
+      });
+      return true;
+    } catch (e) {
+      print("updateGeoLocation: ${e.toString()}");
+      return false;
+    }
+  }
+
   Future attendanceReporting(EmpAttendanceModel empAttendance) async {
     String date =
         empAttendance.time!.toDate().toString().substring(0, 10).trim();

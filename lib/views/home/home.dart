@@ -2,7 +2,9 @@ import 'package:face_rec/models/employee_model.dart';
 import 'package:face_rec/services/authentication.dart';
 import 'package:face_rec/services/database.dart';
 import 'package:face_rec/services/shared_pref.dart';
+import 'package:face_rec/shared/buttons/sign_in_bt.dart';
 import 'package:face_rec/shared/loading/loading.dart';
+import 'package:face_rec/shared/snackbar.dart';
 import 'package:face_rec/views/attendance/att_report.dart';
 import 'package:face_rec/views/authentication/auth_page.dart';
 import 'package:face_rec/views/home/att_in_out_dialog.dart';
@@ -16,6 +18,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DetailedEmployeeModel? detEmpModel;
+    ShapeBorder roundedRectangleBorder =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0));
 
     return Scaffold(
       appBar: AppBar(
@@ -36,6 +40,7 @@ class HomePage extends StatelessWidget {
               email: snapshot.data["email"],
               loc: snapshot.data["loc"],
             );
+
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,8 +72,7 @@ class HomePage extends StatelessWidget {
                         minVerticalPadding: 10.0,
                         tileColor: Colors.redAccent,
                         textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
+                        shape: roundedRectangleBorder,
                         title: const Text("Attendance Recorder",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17.0)),
@@ -87,8 +91,7 @@ class HomePage extends StatelessWidget {
                         minVerticalPadding: 10.0,
                         tileColor: Colors.redAccent,
                         textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
+                        shape: roundedRectangleBorder,
                         title: const Text("Attendance Summary",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17.0)),
@@ -117,6 +120,115 @@ class HomePage extends StatelessWidget {
             ));
           }
         },
+      ),
+      drawer: HomeDrawer(),
+    );
+  }
+}
+
+class HomeDrawer extends StatefulWidget {
+  const HomeDrawer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<HomeDrawer> createState() => _HomeDrawerState();
+}
+
+class _HomeDrawerState extends State<HomeDrawer> {
+  final GlobalKey<FormState> _drawerKey = GlobalKey<FormState>();
+  final FocusNode _latFocus = FocusNode();
+  final FocusNode _lonFocus = FocusNode();
+  String lat = "";
+  String lon = "";
+  bool loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+      child: DrawerHeader(
+        child: Form(
+          key: _drawerKey,
+          child: Column(
+            children: <Widget>[
+              const Text(
+                "Change geolocation",
+                style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0, width: 0.0),
+              TextFormField(
+                focusNode: _latFocus,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  label: Text("latitude"),
+                ),
+                onChanged: (val) => lat = val,
+                onFieldSubmitted: (val) =>
+                    FocusScope.of(context).requestFocus(_lonFocus),
+                validator: (val) => val != null
+                    ? val.contains(".")
+                        ? null
+                        : "Please enter a valid latitude"
+                    : "Please enter a latitude",
+                textInputAction: TextInputAction.next,
+              ),
+              TextFormField(
+                focusNode: _lonFocus,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  label: Text("longitude"),
+                ),
+                onChanged: (val) => lon = val,
+                onFieldSubmitted: (val) => FocusScope.of(context).unfocus(),
+                validator: (val) => val != null
+                    ? val.contains(".")
+                        ? null
+                        : "Please enter a valid longitude"
+                    : "Please enter a longitude",
+                textInputAction: TextInputAction.done,
+              ),
+              const SizedBox(height: 30.0, width: 0.0),
+              TextButton(
+                onPressed: () async {
+                  if (_drawerKey.currentState!.validate()) {
+                    setState(() {
+                      loading = true;
+                    });
+                    final result =
+                        await DatabaseService(uid: UserSharedPref.getUser())
+                            .updateGeoLocation(
+                                double.parse(lat), double.parse(lon));
+                    result
+                        ? setState(() {
+                            loading = false;
+                            commonSnackbar(
+                                "Successfully updated geolocation", context);
+                          })
+                        : setState(() {
+                            loading = false;
+                            commonSnackbar(
+                                "Something went wrong\nCouldn't update geolocation",
+                                context);
+                          });
+                  }
+                },
+                child: loading
+                    ? const Loading(white: true)
+                    : const Text(
+                        "Update",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                style: authSignInBtnStyle(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
