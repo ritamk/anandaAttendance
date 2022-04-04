@@ -52,7 +52,10 @@ class UserSharedPref {
       list![0].contains("true") &&
               time!.toDate().toString().substring(0, 10).trim() == list[1]
           ? true
-          : false;
+          : list[0].contains("false") &&
+                  time!.toDate().toString().substring(0, 10).trim() == list[1]
+              ? false
+              : null;
     } catch (e) {
       return null;
     }
