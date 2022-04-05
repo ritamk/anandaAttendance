@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      onDrawerChanged: (isOpened) => !isOpened ? setState(() {}) : null,
+      onDrawerChanged: reloadAfterClosingDrawer,
       appBar: AppBar(
         title: const Text("Home"),
         actions: <Widget>[
@@ -140,5 +140,14 @@ class _HomePageState extends State<HomePage> {
           : const Center(child: Loading(white: false, rad: 14.0)),
       drawer: const HomeDrawer(),
     );
+  }
+
+  void reloadAfterClosingDrawer(isOpened) {
+    if (!isOpened) {
+      setState(() => loading = true);
+      loadEmpData().whenComplete(() => setState(() => loading = false));
+    } else {
+      null;
+    }
   }
 }
